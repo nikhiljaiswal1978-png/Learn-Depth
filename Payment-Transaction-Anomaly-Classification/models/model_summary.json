@@ -1,0 +1,32 @@
+{
+  "final_model": "Logistic Regression",
+  "features": [
+    "transaction_amount",
+    "txn_hour",
+    "txn_frequency_24h",
+    "merchant_category_risk",
+    "account_age_days",
+    "avg_txn_amount_30d"
+  ],
+  "metrics": {
+    "accuracy": 0.893589509339555,
+    "precision": 0.013584117032392894,
+    "recall": 0.8455284552845529,
+    "f1": 0.026738655354158633,
+    "roc_auc": 0.9048700590348341
+  },
+  "confusion_matrix": [
+    [
+      63474,
+      7552
+    ],
+    [
+      19,
+      104
+    ]
+  ],
+  "rows_used": 284593,
+  "duplicates_removed": 214,
+  "test_size": 0.25,
+  "random_state": 42
+}
