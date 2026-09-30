@@ -2,9 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# ============================================================
 # PAGE CONFIGURATION
-# ============================================================
 st.set_page_config(
     page_title="Sentinel AI | Transaction Anomaly Detection",
     page_icon="🛡️",
@@ -12,10 +10,8 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ============================================================
 # CUSTOM UI STYLING
 # UI ONLY — MODEL/PREDICTION LOGIC IS UNCHANGED
-# ============================================================
 st.markdown("""
 <style>
     /* Main background */
@@ -240,29 +236,21 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ============================================================
 # LOAD THE SAME MODEL
-# ============================================================
 from pathlib import Path
 
-# Project root = Payment-Transaction-Anomaly-Classification
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 MODEL_PATH = BASE_DIR / "models" / "anomaly_model.pkl"
-
 if not MODEL_PATH.exists():
     st.error(f"Model file not found: {MODEL_PATH}")
     st.stop()
 
 artifact = joblib.load(MODEL_PATH)
-
 model = artifact["model"]
 features = artifact["features"]
 FINAL_MODEL_NAME = artifact.get("final_model", "Logistic Regression")
 
-# ============================================================
 # SIDEBAR
-# ============================================================
 with st.sidebar:
     st.markdown('<div class="sidebar-title">🛡️ Sentinel AI</div>', unsafe_allow_html=True)
     st.markdown(
@@ -295,9 +283,7 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Educational prototype • Not a production fraud-detection system")
 
-# ============================================================
 # HERO SECTION
-# ============================================================
 st.markdown("""
 <div class="hero">
     <div class="hero-badge">FINTECH • MACHINE LEARNING • SECURITY</div>
@@ -309,9 +295,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ============================================================
 # TOP INFO CARDS
-# ============================================================
 c1, c2, c3 = st.columns(3)
 
 with c1:
@@ -340,9 +324,7 @@ with c3:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ============================================================
 # INPUT SECTION
-# ============================================================
 st.markdown('<div class="section-title">🔍 Transaction Analysis</div>', unsafe_allow_html=True)
 st.markdown(
     '<div class="section-subtitle">Enter the transaction characteristics below and run the ML analysis.</div>',
@@ -399,10 +381,8 @@ with st.form("transaction_form"):
     st.markdown("<br>", unsafe_allow_html=True)
     submitted = st.form_submit_button("🚀 ANALYZE TRANSACTION")
 
-# ============================================================
 # PREDICTION
 # SAME PREDICTION LOGIC — ONLY PRESENTATION CHANGED
-# ============================================================
 if submitted:
     row = pd.DataFrame(
         [[amount, hour, freq, risk, age, avg]],
@@ -473,9 +453,7 @@ if submitted:
         "It should not be interpreted as a real-world financial risk score."
     )
 
-# ============================================================
 # FOOTER
-# ============================================================
 st.markdown("""
 <div class="footer">
     🛡️ Sentinel AI &nbsp;•&nbsp; Payment Transaction Anomaly Classification<br>
