@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import joblib
 
 # PAGE CONFIGURATION
@@ -131,7 +132,7 @@ st.markdown("""
         color: #f8fafc !important;
         border-radius: 10px !important;
     }
-
+            
     div[data-baseweb="input"] input {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
@@ -238,13 +239,8 @@ st.markdown("""
 
 # LOAD THE SAME MODEL
 from pathlib import Path
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 MODEL_PATH = BASE_DIR / "models" / "anomaly_model.pkl"
-if not MODEL_PATH.exists():
-    st.error(f"Model file not found: {MODEL_PATH}")
-    st.stop()
-
 artifact = joblib.load(MODEL_PATH)
 model = artifact["model"]
 features = artifact["features"]
@@ -262,10 +258,10 @@ with st.sidebar:
 
     st.markdown("---")
 
-    st.markdown('<div class="sidebar-title">⚙️ Model</div>', unsafe_allow_html=True)
+    st.markdown("### ⚙️ Model")
     st.info(f"{FINAL_MODEL_NAME}")
 
-    st.markdown('<div class="sidebar-title">📌 Inputs</div>', unsafe_allow_html=True)
+    st.markdown("### 📌 Inputs")
     st.markdown(
         """
         <div class="sidebar-text">
@@ -384,10 +380,15 @@ with st.form("transaction_form"):
 # PREDICTION
 # SAME PREDICTION LOGIC — ONLY PRESENTATION CHANGED
 if submitted:
+    # The final Logistic Regression model was trained after log1p
+    # transforming the two amount-based features. Apply the exact same
+    # preprocessing to new Streamlit inputs before prediction.
     row = pd.DataFrame(
         [[amount, hour, freq, risk, age, avg]],
         columns=features
     )
+    row["transaction_amount"] = np.log1p(row["transaction_amount"])
+    row["avg_txn_amount_30d"] = np.log1p(row["avg_txn_amount_30d"])
 
     pred = int(model.predict(row)[0])
     prob = float(model.predict_proba(row)[0, 1])
